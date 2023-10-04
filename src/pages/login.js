@@ -1,5 +1,8 @@
 import axios from "axios";
+import { config } from "dotenv";
 import React, { useState } from "react";
+
+config();
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -13,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/login",
+        process.env.API_URL + "login",
         formData
       );
       const { token } = response.data;

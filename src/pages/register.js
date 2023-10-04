@@ -1,11 +1,15 @@
 import axios from "axios";
+import { config } from "dotenv";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+
+config();
 
 const Register = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -19,9 +23,15 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      console.error("As senhas não coincidem");
+      return;
+    }
+
     try {
       const response = await axios.post(
-        "http://localhost:3001/register",
+        process.env.API_URL + "register",
         formData
       );
       console.log("Registration successful!", response.data);
@@ -36,6 +46,16 @@ const Register = () => {
     <div>
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <div>
           <label>Email:</label>
           <input

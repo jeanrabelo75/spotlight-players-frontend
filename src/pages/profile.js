@@ -1,4 +1,4 @@
-import api from "../utils/api";
+import api from "@/utils/api";
 import React, { useState, useEffect } from "react";
 
 const Profile = () => {
@@ -11,7 +11,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await api.get("/profile");
+        const response = await api.get("profile");
         setUserInfo(response.data);
         setEditedInfo(response.data);
       } catch (error) {
