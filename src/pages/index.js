@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/auth';
 
 const Home = () => {
-  console.log(useAuth());
   const { isLoggedIn, login, logout } = useAuth();
 
   return (
@@ -16,13 +15,13 @@ const Home = () => {
       ) : (
         <>
           <Link href="/login">
-            <a>Login</a>
+            <span>Login</span>
           </Link>
           <br />
           <Link href="/register">
-            <a>Register</a>
+            <span>Register</span>
           </Link>
-          <button onClick={login}>Login (Mock)</button>
+          <button onClick={login}>Login</button>
         </>
       )}
     </div>
