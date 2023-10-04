@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { useAuth } from '../contexts/auth.js';
+import { useAuth } from '@/contexts/auth';
 
 const Home = () => {
+  console.log(useAuth());
   const { isLoggedIn, login, logout } = useAuth();
 
   return (
