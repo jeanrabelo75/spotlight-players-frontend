@@ -1,14 +1,15 @@
 import api from "@/utils/api";
 import { useRouter } from "next/router";
 import { useAuth } from "@/contexts/auth";
-import React, { useState, useEffect } from "react";
 import { MessageContext } from "@/contexts/message";
+import React, { useState, useEffect, useContext } from "react";
 
 const Profile = () => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
-  const [userInfo, setUserInfo] = useState({});
   const showMessage = useContext(MessageContext);
+
+  const [userInfo, setUserInfo] = useState({});
   const [editedInfo, setEditedInfo] = useState({});
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -19,10 +20,6 @@ const Profile = () => {
       router.push("/login");
     }
   }, [isLoggedIn, router]);
-
-  if (!isLoggedIn) {
-    return null;
-  }
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -43,20 +40,50 @@ const Profile = () => {
     setEditedInfo({ ...editedInfo, [name]: value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const updatedFields = {};
+      for (const key in editedInfo) {
+        if (userInfo[key] !== editedInfo[key]) {
+          updatedFields[key] = editedInfo[key];
+        }
+      }
+  
+      if (Object.keys(updatedFields).length === 0) {
+        showMessage("info", "No changes detected.");
+        return;
+      }
+  
+      const response = await api.patch("/user/update-profile", updatedFields);
+  
+      setUserInfo((prevInfo) => ({
+        ...prevInfo,
+        ...updatedFields,
+      }));
+  
+      showMessage("success", "Profile updated successfully!");
+    } catch (error) {
+      showMessage("error", "Error updating profile");
+      console.error("Error updating profile:", error);
+    }
+  };
+  
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
-      await api.put("/change-password", {
+      await api.put("/user/change-password", {
         newPassword,
         confirmNewPassword,
       });
 
-      showMessage('success', 'Password updated successfully!');
+      showMessage("success", "Password updated successfully!");
       setShowChangePassword(false);
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (error) {
-      showMessage('error', 'Error updating password');
+      showMessage("error", "Error updating password");
       console.error("Error updating password:", error);
     }
   };

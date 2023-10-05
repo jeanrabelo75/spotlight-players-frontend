@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useState } from "react";
 import { useRouter } from "next/router";
+import React, { useState, useContext } from "react";
 import { MessageContext } from "@/contexts/message";
 
 const Register = () => {
@@ -30,7 +30,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(process.env.API_URL + "register", formData);
-      
+
       showMessage('success', 'Registration successful!');
       router.push("/login");
     } catch (error) {
