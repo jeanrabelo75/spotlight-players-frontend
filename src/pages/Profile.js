@@ -1,6 +1,6 @@
-import api from "@/utils/api";
+import api from "@/utils/Api";
 import { useRouter } from "next/router";
-import { useAuth } from "@/contexts/auth";
+import { useAuth } from "@/contexts/Auth";
 import React, { useState, useEffect } from "react";
 
 const Profile = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthProvider } from "@/contexts/auth";
+import { AuthProvider } from "@/contexts/Auth";
 
 function MyApp({ Component, pageProps }) {
   console.log(useAuth());
