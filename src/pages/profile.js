@@ -2,11 +2,13 @@ import api from "@/utils/api";
 import { useRouter } from "next/router";
 import { useAuth } from "@/contexts/auth";
 import React, { useState, useEffect } from "react";
+import { MessageContext } from "@/contexts/message";
 
 const Profile = () => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const [userInfo, setUserInfo] = useState({});
+  const showMessage = useContext(MessageContext);
   const [editedInfo, setEditedInfo] = useState({});
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -48,11 +50,13 @@ const Profile = () => {
         newPassword,
         confirmNewPassword,
       });
-      console.log("Password updated successfully!");
+
+      showMessage('success', 'Password updated successfully!');
       setShowChangePassword(false);
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (error) {
+      showMessage('error', 'Error updating password');
       console.error("Error updating password:", error);
     }
   };

@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { MessageContext } from "@/contexts/message";
 
 const Register = () => {
-  const API_URL = process.env.API_URL || "";
   const router = useRouter();
-
+  const showMessage = useContext(MessageContext);
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,16 +24,17 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      console.error("As senhas não coincidem");
+      showMessage('error', 'Passwords do not match!');
       return;
     }
 
     try {
-      const response = await axios.post(API_URL + "register", formData);
-      console.log("Registration successful!", response.data);
-
+      const response = await axios.post(process.env.API_URL + "register", formData);
+      
+      showMessage('success', 'Registration successful!');
       router.push("/login");
     } catch (error) {
+      showMessage('error', 'Error registering user.');
       console.error("Error registering user:", error);
     }
   };
