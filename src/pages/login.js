@@ -1,8 +1,5 @@
 import axios from "axios";
-import { config } from "dotenv";
 import React, { useState } from "react";
-
-config();
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,8 +16,8 @@ const Login = () => {
         process.env.API_URL + "login",
         formData
       );
-      const { token } = response.data;
 
+      const { token } = response.data;
       localStorage.setItem("token", token);
 
       console.log("Login successful!", response.data);

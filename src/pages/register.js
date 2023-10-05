@@ -1,11 +1,9 @@
 import axios from "axios";
-import { config } from "dotenv";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 
-config();
-
 const Register = () => {
+  const API_URL = process.env.API_URL || "";
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -30,10 +28,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(
-        process.env.API_URL + "register",
-        formData
-      );
+      const response = await axios.post(API_URL + "register", formData);
       console.log("Registration successful!", response.data);
 
       router.push("/login");

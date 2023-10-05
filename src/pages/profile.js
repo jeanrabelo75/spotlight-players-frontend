@@ -1,12 +1,26 @@
 import api from "@/utils/api";
+import { useRouter } from "next/router";
+import { useAuth } from "@/contexts/auth";
 import React, { useState, useEffect } from "react";
 
 const Profile = () => {
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
   const [userInfo, setUserInfo] = useState({});
   const [editedInfo, setEditedInfo] = useState({});
-  const [showChangePassword, setShowChangePassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   useEffect(() => {
     const fetchUserInfo = async () => {
