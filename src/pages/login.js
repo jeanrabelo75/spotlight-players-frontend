@@ -1,9 +1,13 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useRouter } from "next/router";
+import { MessageContext } from "@/contexts/message";
 
 const Login = () => {
+  const router = useRouter();
+  const showMessage = useContext(MessageContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -20,8 +24,11 @@ const Login = () => {
       const { token } = response.data;
       localStorage.setItem("token", token);
 
+      showMessage('success', 'Login successful!');
+      router.push("/");
       console.log("Login successful!", response.data);
     } catch (error) {
+      showMessage('error', 'Error logging in. Please try again!');
       console.error("Error logging in:", error);
     }
   };
