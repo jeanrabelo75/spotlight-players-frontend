@@ -1,12 +1,19 @@
 import { useRouter } from "next/router";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { MessageContext } from "@/contexts/message";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const Login = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const showMessage = useContext(MessageContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
+
+  useEffect(() => {
+    if (session) {
+      router.push("/");
+    }
+  }, [session, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

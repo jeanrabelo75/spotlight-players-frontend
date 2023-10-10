@@ -1,161 +1,162 @@
-import api from "@/utils/api";
-import { useRouter } from "next/router";
-import { useSession  } from 'next-auth/react';
+import api from '@/utils/api';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { MessageContext } from "@/contexts/message";
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from 'react';
 
 const Profile = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const showMessage = useContext(MessageContext);
 
-  const [userInfo, setUserInfo] = useState({});
-  const [editedInfo, setEditedInfo] = useState({});
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    birthday: '',
+    created_at: '',
+  });
 
   useEffect(() => {
+    if (session === undefined) {
+      return;
+    }
+
     if (!session) {
-      router.push("/login");
+      router.push('/login');
+    } else {
+      api.get('/profile')
+        .then((response) => {
+          const { name, email, birthday, created_at } = response.data;
+          setUserData({
+            name,
+            email,
+            birthday,
+            created_at,
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching user profile:', error);
+        });
     }
   }, [session, router]);
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await api.get("profile");
-        setUserInfo(response.data);
-        setEditedInfo(response.data);
-      } catch (error) {
-        console.error("Error fetching user info:", error);
-      }
-    };
-
-    fetchUserInfo();
-  }, []);
-
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedInfo({ ...editedInfo, [name]: value });
+    setUserData({ ...userData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdateProfile = (e) => {
     e.preventDefault();
-  
-    try {
-      const updatedFields = {};
-      for (const key in editedInfo) {
-        if (userInfo[key] !== editedInfo[key]) {
-          updatedFields[key] = editedInfo[key];
-        }
-      }
-  
-      if (Object.keys(updatedFields).length === 0) {
-        showMessage("info", "No changes detected.");
-        return;
-      }
-  
-      const response = await api.patch("/user/update-profile", updatedFields);
-  
-      setUserInfo((prevInfo) => ({
-        ...prevInfo,
-        ...updatedFields,
-      }));
-  
-      showMessage("success", "Profile updated successfully!");
-    } catch (error) {
-      showMessage("error", "Error updating profile");
-      console.error("Error updating profile:", error);
-    }
-  };
-  
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    try {
-      await api.put("/user/change-password", {
-        newPassword,
-        confirmNewPassword,
+    api.patch('/user/update-profile', userData)
+      .then(() => {
+        showMessage('success', 'Profile updated successfully!');
+        router.reload();
+      })
+      .catch((error) => {
+        showMessage('error', 'Error updating profile.');
       });
+  };
 
-      showMessage("success", "Password updated successfully!");
-      setShowChangePassword(false);
-      setNewPassword("");
-      setConfirmNewPassword("");
-    } catch (error) {
-      showMessage("error", "Error updating password");
-      console.error("Error updating password:", error);
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    const { newPassword, confirmNewPassword } = userData;
+
+    if (newPassword !== confirmNewPassword) {
+      showMessage('error', 'Passwords do not match.');
+      return;
     }
+
+    api.put('/user/change-password', { newPassword })
+      .then(() => {
+        showMessage('success', 'Password updated successfully!');
+      })
+      .catch((error) => {
+        showMessage('error', 'Error updating password.');
+      });
+  };
+
+  const formatDateForInput = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   return (
     <div>
       <h1>Profile</h1>
-      <div>
-        <button onClick={() => setShowChangePassword(false)}>Perfil</button>
-        <button onClick={() => setShowChangePassword(true)}>
-          Alterar Senha
-        </button>
-      </div>
-      {showChangePassword ? (
-        <form onSubmit={handlePasswordChange}>
-          <div>
-            <label>New Password:</label>
-            <input
-              type="password"
-              name="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Confirm New Password:</label>
-            <input
-              type="password"
-              name="confirmNewPassword"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit">Save Changes</button>
-        </form>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={editedInfo.email || ""}
-              onChange={handleChange}
-              readOnly
-            />
-          </div>
-          <div>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={editedInfo.name || ""}
-              onChange={handleChange}
-              readOnly
-            />
-          </div>
-          <div>
-            <label>Birthdate:</label>
-            <input
-              type="date"
-              name="birthdate"
-              value={editedInfo.birthdate || ""}
-              onChange={handleChange}
-              readOnly
-            />
-          </div>
-          <button type="submit">Save Changes</button>
-        </form>
-      )}
+      <form onSubmit={handleUpdateProfile}>
+        <div>
+          <label>Name: </label>
+          <input
+            type="text"
+            name="name"
+            value={userData.name}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Email: </label>
+          <input
+            type="email"
+            name="email"
+            value={userData.email}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Birthday: </label>
+          <input
+            type="date"
+            name="birthday"
+            value={formatDateForInput(userData.birthday)}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Created At:</label>
+          <input
+            type="text"
+            name="created_at"
+            value={formatDateForInput(userData.created_at)}
+            readOnly
+          />
+        </div>
+        <br />
+        <br />
+        <button type="submit">Save Changes</button>
+        <br />
+        <br />
+      </form>
+      <form onSubmit={handleChangePassword}>
+        <div>
+          <label>New Password: </label>
+          <input
+            type="password"
+            name="newPassword"
+            value={userData.newPassword}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Confirm New Password: </label>
+          <input
+            type="password"
+            name="confirmNewPassword"
+            value={userData.confirmNewPassword}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <br />
+        <br />
+        <button type="submit">Change Password</button>
+      </form>
     </div>
   );
 };
