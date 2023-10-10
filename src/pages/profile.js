@@ -1,12 +1,12 @@
 import api from "@/utils/api";
 import { useRouter } from "next/router";
-import { useAuth } from "@/contexts/auth";
+import { useSession  } from 'next-auth/react';
 import { MessageContext } from "@/contexts/message";
 import React, { useState, useEffect, useContext } from "react";
 
 const Profile = () => {
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
+  const { data: session } = useSession();
   const showMessage = useContext(MessageContext);
 
   const [userInfo, setUserInfo] = useState({});
@@ -16,10 +16,10 @@ const Profile = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!session) {
       router.push("/login");
     }
-  }, [isLoggedIn, router]);
+  }, [session, router]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {

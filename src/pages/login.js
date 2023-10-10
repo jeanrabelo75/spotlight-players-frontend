@@ -1,13 +1,13 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useState, useContext } from "react";
 import { MessageContext } from "@/contexts/message";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
   const router = useRouter();
   const showMessage = useContext(MessageContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -15,21 +15,21 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        process.env.API_URL + "login",
-        formData
-      );
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
 
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-
-      showMessage('success', 'Login successful!');
+    if (result.error) {
+      if (result.status === 401) {
+        showMessage("error", "Invalid email or password.");
+      } else {
+        showMessage("error", result.error);
+      }
+    } else {
+      showMessage("success", "Login successful!");
       router.push("/");
-      console.log("Login successful!", response.data);
-    } catch (error) {
-      showMessage('error', 'Error logging in. Please try again!');
-      console.error("Error logging in:", error);
     }
   };
 

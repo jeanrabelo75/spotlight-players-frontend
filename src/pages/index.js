@@ -1,16 +1,24 @@
 import Link from "next/link";
-import { useAuth } from "@/contexts/auth";
+import { useRouter } from "next/router";
+import { useSession, signOut } from "next-auth/react";
 
 const Home = () => {
-  const { isLoggedIn, login, logout } = useAuth();
+  const router = useRouter();
+  const { data: session } = useSession();
+  
+  function userLogout(){
+    signOut({ redirect: false }).then(() => {
+			router.push("/");
+		});
+  }
 
   return (
     <div>
       <h1>Welcome to My App</h1>
-      {isLoggedIn ? (
+      {session ? (
         <>
           <p>You are logged in.</p>
-          <button onClick={logout}>Logout</button>
+          <button onClick={userLogout}>Logout</button>
         </>
       ) : (
         <>
@@ -21,7 +29,6 @@ const Home = () => {
           <Link href="/register">
             <span>Register</span>
           </Link>
-          <button onClick={login}>Login</button>
         </>
       )}
     </div>

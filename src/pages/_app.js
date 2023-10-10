@@ -1,15 +1,16 @@
-import React from 'react';
-import { AuthProvider } from '@/contexts/auth';
-import { MessageProvider } from '@/contexts/message';
+import React from "react";
+import { SessionProvider } from "next-auth/react";
+import { MessageProvider } from "@/contexts/message";
 
-function MyApp({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
-    <AuthProvider>
+    <SessionProvider session={session}>
       <MessageProvider>
         <Component {...pageProps} />
       </MessageProvider>
-    </AuthProvider>
+    </SessionProvider>
   );
 }
-
-export default MyApp;
