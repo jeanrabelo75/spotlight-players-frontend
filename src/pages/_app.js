@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { MessageProvider } from "@/contexts/message";
 

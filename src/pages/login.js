@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState, useContext, useEffect } from "react";
 import { MessageContext } from "@/contexts/message";
 import { signIn, useSession } from "next-auth/react";
+import React, { useState, useContext, useEffect } from "react";
 
 const Login = () => {
   const router = useRouter();
@@ -67,7 +68,8 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <p>
-        Don't have an account? <a href="/register">Register here</a>.
+        Don&rsquo;t have an account? <Link href="/register">Register here</Link>
+        .
       </p>
     </div>
   );

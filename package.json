@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tailwind:build": "tailwindcss build -o ./src/styles/tailwind.css",
+    "tailwind:watch": "tailwindcss -i ./src/styles/globals.css -o ./src/styles/tailwind.css --watch",
+    "postinstall": "npm run tailwind:build"
   },
   "dependencies": {
     "axios": "^1.5.1",
