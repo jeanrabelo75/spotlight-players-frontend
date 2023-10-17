@@ -12,7 +12,7 @@ const Login = () => {
 
   useEffect(() => {
     if (session) {
-      router.push("/");
+      router.push("/app/");
     }
   }, [session, router]);
 
@@ -37,40 +37,78 @@ const Login = () => {
       }
     } else {
       showMessage("success", "Login successful!");
-      router.push("/");
+      router.push("/app/");
     }
   };
 
   return (
     <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+      {/* Header */}
+      <header className="bg-primary p-4 text-white flex justify-between items-center">
+        <div className="text-2xl font-bold">Your Startup</div>
+        <div className="md:hidden">
+          <button>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
         </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p>
-        Don&rsquo;t have an account? <Link href="/register">Register here</Link>
-        .
-      </p>
+      </header>
+
+      {/* Login Form */}
+      <div className="mt-8 mx-auto max-w-md p-6 bg-white shadow-md rounded">
+        <h1 className="text-2xl font-bold mb-4">Login</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-primary text-white px-4 py-2 rounded"
+          >
+            Login
+          </button>
+        </form>
+        <p className="mt-4">
+          Don&apos;t have an account?{" "}
+          <Link href="/register">
+            <span className="text-blue-500">Register here</span>
+          </Link>
+          .
+        </p>
+      </div>
     </div>
   );
 };
