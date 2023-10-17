@@ -11,6 +11,8 @@ module.exports = {
     colors: {
       primary: "#020617",
       white: "#ffffff",
+      moon: "#000",
+      sun: "#FFA500",
     },
     extend: {
       backgroundImage: {

@@ -45,7 +45,7 @@ const Login = () => {
     <div>
       {/* Header */}
       <header className="bg-primary p-4 text-white flex justify-between items-center">
-        <div className="text-2xl font-bold">Your Startup</div>
+        <div className="text-2xl font-bold">Spotlight Players</div>
         <div className="md:hidden">
           <button>
             <svg

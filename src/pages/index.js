@@ -18,7 +18,7 @@ const Home = () => {
     <div>
       {/* Header */}
       <header className="bg-primary p-4 text-white flex justify-between items-center">
-        <div className="text-2xl font-bold">Your Startup</div>
+        <div className="text-2xl font-bold">Spotlight Players</div>
         <div className="hidden md:flex space-x-4">
           <button onClick={() => scrollToSection("about")}>About</button>
           <button onClick={() => scrollToSection("contact")}>Contact</button>
@@ -60,7 +60,7 @@ const Home = () => {
 
       {/* Hero Section */}
       <section id="hero" className="bg-gray-100 p-12 text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Startup</h1>
+        <h1 className="text-4xl font-bold mb-4">Welcome to Spotlight Players</h1>
         <p className="text-lg mb-8">Revolutionizing the way you do things</p>
         <button className="bg-primary text-white px-6 py-3 rounded-full">
           Get Started
@@ -99,7 +99,7 @@ const Home = () => {
 
       {/* Footer */}
       <footer className="bg-gray-200 p-4 text-center">
-        <p>&copy; 2023 Your Startup</p>
+        <p>&copy; 2023 Spotlight Players</p>
       </footer>
 
       {/* Menu Lateral */}
